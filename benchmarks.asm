@@ -26,6 +26,11 @@ section .data
     mode_write       db "w", 0
     mode_read        db "r", 0
 
+    ; Floating point constants
+    one             dq 1.0
+    two             dq 2.0
+    thousand        dq 1000.0
+
 section .bss
     ; Memory for array operations
     array            resq 1000000      ; Reserve space for array operations
@@ -46,6 +51,9 @@ main:
     
     ; Call integer benchmark
     call integer_benchmark
+    
+    ; Call floating point benchmark
+    call float_benchmark
     
     mov rsp, rbp
     pop rbp
@@ -90,6 +98,50 @@ div_loop:
     ; Get end time and print
     call get_time_diff
     lea rdi, [msg_int_bench]
+    call printf
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Floating point operation benchmark
+float_benchmark:
+    push rbp
+    mov rbp, rsp
+    
+    ; Get start time
+    call get_time
+    
+    ; Floating Point Addition
+    mov ecx, INT_ADD_COUNT
+    movsd xmm0, qword [one]
+    movsd xmm1, qword [two]
+fadd_loop:
+    addsd xmm0, xmm1
+    dec ecx
+    jnz fadd_loop
+    
+    ; Floating Point Multiplication
+    mov ecx, INT_MUL_COUNT
+    movsd xmm0, qword [one]
+    movsd xmm1, qword [two]
+fmul_loop:
+    mulsd xmm0, xmm1
+    dec ecx
+    jnz fmul_loop
+    
+    ; Floating Point Division
+    mov ecx, INT_DIV_COUNT
+    movsd xmm0, qword [thousand]
+    movsd xmm1, qword [two]
+fdiv_loop:
+    divsd xmm0, xmm1
+    dec ecx
+    jnz fdiv_loop
+    
+    ; Get end time and print
+    call get_time_diff
+    lea rdi, [msg_float_bench]
     call printf
     
     mov rsp, rbp
