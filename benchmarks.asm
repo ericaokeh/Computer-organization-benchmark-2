@@ -44,6 +44,54 @@ main:
     push rbp
     mov rbp, rsp
     
+    ; Call integer benchmark
+    call integer_benchmark
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Integer operation benchmark
+integer_benchmark:
+    push rbp
+    mov rbp, rsp
+    
+    ; Get start time
+    call get_time
+    
+    ; Integer Addition
+    mov ecx, INT_ADD_COUNT
+    mov eax, 1
+    mov ebx, 2
+add_loop:
+    add eax, ebx
+    dec ecx
+    jnz add_loop
+    
+    ; Integer Multiplication
+    mov ecx, INT_MUL_COUNT
+    mov eax, 1
+    mov ebx, 2
+mul_loop:
+    imul eax, ebx
+    dec ecx
+    jnz mul_loop
+    
+    ; Integer Division
+    mov ecx, INT_DIV_COUNT
+    mov eax, 1000
+    mov ebx, 2
+div_loop:
+    cdq
+    idiv ebx
+    dec ecx
+    jnz div_loop
+    
+    ; Get end time and print
+    call get_time_diff
+    lea rdi, [msg_int_bench]
+    call printf
+    
     mov rsp, rbp
     pop rbp
     ret
