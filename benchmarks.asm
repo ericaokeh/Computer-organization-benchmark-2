@@ -65,6 +65,9 @@ main:
     ; Call hard drive benchmark 2
     call hd_benchmark2
     
+    ; Call hard drive benchmark 3
+    call hd_benchmark3
+    
     mov rsp, rbp
     pop rbp
     ret
@@ -322,6 +325,17 @@ hd_benchmark2:
     pop     rbp
     ret
 
+; Hard drive benchmark 3 (10KB chunks)
+hd_benchmark3:
+    push    rbp
+    mov     rbp, rsp
+    sub     rsp, 32
+
+    ; Record start time
+    call    get_time
+    mov     [rbp-8], rax    ; start_time
+
+    ; Open file for reading
 ; Function to get current time
 get_time:
     push rbp
