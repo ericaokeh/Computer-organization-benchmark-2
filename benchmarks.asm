@@ -29,4 +29,9 @@ section .data
     ; Floating point constants
     one             dq 1.0
     two             dq 2.0
-    thousand        dq 1000.0 
+    thousand        dq 1000.0
+
+section .bss
+    ; Memory for array operations
+    array            resq 1000000      ; Reserve space for array operations
+    buffer           resb 10000        ; Buffer for file operations 
