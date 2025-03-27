@@ -51,4 +51,34 @@ main:
     
     mov rsp, rbp
     pop rbp
+    ret
+
+; Function to get current time
+get_time:
+    push rbp
+    mov rbp, rsp
+    
+    xor edi, edi        ; NULL argument for time()
+    call time
+    mov [time_start], rax
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Function to calculate time difference
+get_time_diff:
+    push rbp
+    mov rbp, rsp
+    
+    xor edi, edi        ; NULL argument for time()
+    call time
+    mov [time_end], rax
+    
+    mov rax, [time_end]
+    sub rax, [time_start]
+    mov [time_diff], rax
+    
+    mov rsp, rbp
+    pop rbp
     ret 
