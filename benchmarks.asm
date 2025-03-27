@@ -43,4 +43,12 @@ section .text
     extern fclose
     extern fread
     extern fwrite
-    extern time 
+    extern time
+
+main:
+    push rbp
+    mov rbp, rsp
+    
+    mov rsp, rbp
+    pop rbp
+    ret 
