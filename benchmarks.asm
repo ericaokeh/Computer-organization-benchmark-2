@@ -8,6 +8,11 @@ section .data
     HD_CHUNK_SMALL   equ 100
     HD_CHUNK_LARGE   equ 10000
 
+    ; Timing variables
+    time_start       dq 0
+    time_end         dq 0
+    time_diff        dq 0
+
 section .bss
     ; Memory for array operations
     array            resq 1000000      ; Reserve space for array operations
@@ -25,6 +30,36 @@ section .text
 main:
     push rbp
     mov rbp, rsp
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Function to get current time
+get_time:
+    push rbp
+    mov rbp, rsp
+    
+    xor edi, edi        ; NULL argument for time()
+    call time
+    mov [time_start], rax
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Function to calculate time difference
+get_time_diff:
+    push rbp
+    mov rbp, rsp
+    
+    xor edi, edi        ; NULL argument for time()
+    call time
+    mov [time_end], rax
+    
+    mov rax, [time_end]
+    sub rax, [time_start]
+    mov [time_diff], rax
     
     mov rsp, rbp
     pop rbp
