@@ -7,6 +7,7 @@ section .data
     HD_READ_COUNT    equ 1000000000    ; 10^9
     HD_CHUNK_SMALL   equ 100
     HD_CHUNK_LARGE   equ 10000
+    HD_CHUNK_MEDIUM  equ 1024
 
     ; Timing variables
     time_start       dq 0
@@ -60,6 +61,9 @@ main:
     
     ; Call hard drive benchmark 1
     call hd_benchmark1
+    
+    ; Call hard drive benchmark 2
+    call hd_benchmark2
     
     mov rsp, rbp
     pop rbp
@@ -245,6 +249,77 @@ write_small_loop:
     
     mov rsp, rbp
     pop rbp
+    ret
+
+; Hard drive benchmark 2 (1KB chunks)
+hd_benchmark2:
+    push    rbp
+    mov     rbp, rsp
+    sub     rsp, 32
+
+    ; Record start time
+    call    get_time
+    mov     [rbp-8], rax    ; start_time
+
+    ; Open file for reading
+    lea     rdi, [rel filename]
+    lea     rsi, [rel mode_read]
+    call    fopen
+    mov     [rbp-16], rax   ; file handle
+
+    ; Read file in 1KB chunks
+    mov     rcx, HD_READ_COUNT
+.read_loop:
+    push    rcx
+    mov     rdi, [rbp-16]   ; file handle
+    lea     rsi, [rel buffer]
+    mov     rdx, 1          ; size
+    mov     rcx, HD_CHUNK_MEDIUM  ; count (1KB)
+    call    fread
+    pop     rcx
+    loop    .read_loop
+
+    ; Close file
+    mov     rdi, [rbp-16]
+    call    fclose
+
+    ; Open file for writing
+    lea     rdi, [rel filename]
+    lea     rsi, [rel mode_write]
+    call    fopen
+    mov     [rbp-16], rax   ; file handle
+
+    ; Write file in 1KB chunks
+    mov     rcx, HD_READ_COUNT
+.write_loop:
+    push    rcx
+    mov     rdi, [rbp-16]   ; file handle
+    lea     rsi, [rel buffer]
+    mov     rdx, 1          ; size
+    mov     rcx, HD_CHUNK_MEDIUM  ; count (1KB)
+    call    fwrite
+    pop     rcx
+    loop    .write_loop
+
+    ; Close file
+    mov     rdi, [rbp-16]
+    call    fclose
+
+    ; Record end time and calculate duration
+    call    get_time
+    mov     rdi, [rbp-8]    ; start_time
+    mov     rsi, rax        ; end_time
+    call    get_time_diff
+    mov     [rbp-24], rax   ; duration
+
+    ; Print benchmark results
+    lea     rdi, [rel msg_hd2_bench]
+    mov     rsi, [rbp-24]
+    xor     rax, rax
+    call    printf
+
+    mov     rsp, rbp
+    pop     rbp
     ret
 
 ; Function to get current time
