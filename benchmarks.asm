@@ -55,6 +55,9 @@ main:
     ; Call floating point benchmark
     call float_benchmark
     
+    ; Call memory benchmark
+    call memory_benchmark
+    
     mov rsp, rbp
     pop rbp
     ret
@@ -142,6 +145,41 @@ fdiv_loop:
     ; Get end time and print
     call get_time_diff
     lea rdi, [msg_float_bench]
+    call printf
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Memory operation benchmark
+memory_benchmark:
+    push rbp
+    mov rbp, rsp
+    
+    ; Get start time
+    call get_time
+    
+    ; Memory Read
+    mov rcx, MEM_OP_COUNT
+    mov rsi, array
+read_loop:
+    mov eax, [rsi]
+    add rsi, 4
+    dec rcx
+    jnz read_loop
+    
+    ; Memory Write
+    mov rcx, MEM_OP_COUNT
+    mov rdi, array
+write_loop:
+    mov [rdi], eax
+    add rdi, 4
+    dec rcx
+    jnz write_loop
+    
+    ; Get end time and print
+    call get_time_diff
+    lea rdi, [msg_mem_bench]
     call printf
     
     mov rsp, rbp
