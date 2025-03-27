@@ -58,6 +58,9 @@ main:
     ; Call memory benchmark
     call memory_benchmark
     
+    ; Call hard drive benchmark 1
+    call hd_benchmark1
+    
     mov rsp, rbp
     pop rbp
     ret
@@ -180,6 +183,64 @@ write_loop:
     ; Get end time and print
     call get_time_diff
     lea rdi, [msg_mem_bench]
+    call printf
+    
+    mov rsp, rbp
+    pop rbp
+    ret
+
+; Hard drive benchmark 1 (100-byte chunks)
+hd_benchmark1:
+    push rbp
+    mov rbp, rsp
+    
+    ; Get start time
+    call get_time
+    
+    ; Open file for reading
+    lea rdi, [filename]
+    lea rsi, [mode_read]
+    call fopen
+    
+    ; Read file in small chunks
+    mov rcx, HD_READ_COUNT
+    mov rsi, buffer
+read_small_loop:
+    mov rdi, rsi
+    mov rdx, HD_CHUNK_SMALL
+    mov rsi, rax
+    call fread
+    add rsi, HD_CHUNK_SMALL
+    sub rcx, HD_CHUNK_SMALL
+    jg read_small_loop
+    
+    ; Close file
+    mov rdi, rax
+    call fclose
+    
+    ; Open file for writing
+    lea rdi, [filename]
+    lea rsi, [mode_write]
+    call fopen
+    
+    ; Write file in small chunks
+    mov rcx, HD_READ_COUNT
+    mov rsi, buffer
+write_small_loop:
+    mov rdi, rax
+    mov rdx, HD_CHUNK_SMALL
+    call fwrite
+    add rsi, HD_CHUNK_SMALL
+    sub rcx, HD_CHUNK_SMALL
+    jg write_small_loop
+    
+    ; Close file
+    mov rdi, rax
+    call fclose
+    
+    ; Get end time and print
+    call get_time_diff
+    lea rdi, [msg_hd1_bench]
     call printf
     
     mov rsp, rbp
