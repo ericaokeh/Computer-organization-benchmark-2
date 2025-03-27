@@ -6,4 +6,9 @@ section .data
     MEM_OP_COUNT     equ 5000000000    ; 5 × 10^9
     HD_READ_COUNT    equ 1000000000    ; 10^9
     HD_CHUNK_SMALL   equ 100
-    HD_CHUNK_LARGE   equ 10000 
+    HD_CHUNK_LARGE   equ 10000
+
+    ; Timing variables
+    time_start       dq 0
+    time_end         dq 0
+    time_diff        dq 0 
