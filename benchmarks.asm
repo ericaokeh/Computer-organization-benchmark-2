@@ -24,4 +24,9 @@ section .data
     ; File operations
     filename         db "benchmark_data.bin", 0
     mode_write       db "w", 0
-    mode_read        db "r", 0 
+    mode_read        db "r", 0
+
+    ; Floating point constants
+    one             dq 1.0
+    two             dq 2.0
+    thousand        dq 1000.0 
