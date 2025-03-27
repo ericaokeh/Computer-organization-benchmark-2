@@ -34,4 +34,13 @@ section .data
 section .bss
     ; Memory for array operations
     array            resq 1000000      ; Reserve space for array operations
-    buffer           resb 10000        ; Buffer for file operations 
+    buffer           resb 10000        ; Buffer for file operations
+
+section .text
+    global main
+    extern printf
+    extern fopen
+    extern fclose
+    extern fread
+    extern fwrite
+    extern time 
