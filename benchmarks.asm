@@ -19,4 +19,9 @@ section .data
     msg_mem_bench    db "Memory Operation Benchmark Time: ", 0
     msg_hd1_bench    db "Hard Drive Benchmark 1 Time: ", 0
     msg_hd2_bench    db "Hard Drive Benchmark 2 Time: ", 0
-    msg_seconds      db " seconds", 10, 0 
+    msg_seconds      db " seconds", 10, 0
+
+    ; File operations
+    filename         db "benchmark_data.bin", 0
+    mode_write       db "w", 0
+    mode_read        db "r", 0 
